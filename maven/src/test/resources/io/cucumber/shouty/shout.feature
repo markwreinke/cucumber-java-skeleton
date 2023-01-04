@@ -1,3 +1,4 @@
+@slow
 Feature: Shout
 
   We can write notes or such in this space! (As long as you don't start with a Gherkin keyword)

@@ -4,6 +4,7 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.Transpose;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -18,6 +19,29 @@ public class StepDefinitions {
     private static final int DEFAULT_RANGE = 100;
     private HashMap<String, Person> people;
     private Network network;
+
+    @Given("{person} has bought {int} credits")
+    public void personHasBoughtCredits(Person person, int numCredits) {
+        people.get(person.name).addCredits(numCredits);
+    }
+
+    @Then("{person} hears all {person}'s messages")
+    public void personHearsAllOtherPersonsMessages(Person personHear, Person personShout) {
+        assertEquals(people.get(personHear.name).getMessagesHeard().size(), people.get(personShout.name).getMessagesShouted().size());
+    }
+
+    @And("{person} should have {int} credits")
+    public void personShouldHaveCredits(Person person, int numCredits) {
+        assertEquals(numCredits, people.get(person.name).getCredits());
+    }
+
+    @And("{person} shouts {int} over-long messages")
+    public void personShoutsAnOverLongMessage(Person person, int numMessages) {
+        for (int i = 0; i < numMessages; i++){
+            people.get(person.name).removeCredits(2);
+            person_shouts(person, "This is a very long message. The content is not important, but what is important is that is a long message.\nSpecifically, it is a message that is at least as long as this String object that you are reading right now!");
+        }
+    }
 
     static class Whereabouts {
         public String name;
@@ -102,12 +126,30 @@ public class StepDefinitions {
 
     @When("{person} shouts {string}")
     public void person_shouts(Person person, String message) {
+
+        String[] substring = message.split("buy");
+        if (message.contains("buy")) {
+            people.get(person.name).removeCredits(5);
+        }
+        //people.get(person.name).removeCredits(substring.length - 1 * 5);
         people.get(person.name).shout(message);
+    }
+
+    @When("{person} shouts a message")
+    public void personShoutsBlabber(Person person) {
+        person_shouts(person,"here is an unimportant message");
+    }
+
+    @When("{person} shouts {int} messages containing the word {string}")
+    public void person_shouts_messages_containing_word(Person person, int numMessages, String word) throws Throwable {
+        for (int i = 0; i < numMessages; i++) {
+            person_shouts(person, "a message containing the word " + word);
+        }
     }
 
     @When("{person} shouts the following message")
     public void sean_shouts_the_following_message(Person person, String docStringMessage) {
-        people.get(person.name).shout(docStringMessage);
+        person_shouts(person, docStringMessage);
     }
 
     @Then("{person} should hear Sean's message")
@@ -122,8 +164,8 @@ public class StepDefinitions {
 
 
     @When("{person} shouts")
-    public void seanShouts(Person person) {
-        people.get(person.name).shout("Hello World!");
+    public void personShoutsOld(Person person) {
+        person_shouts(person, "Hello World!");
     }
 
     @Then("{person} hears the following messages:")
