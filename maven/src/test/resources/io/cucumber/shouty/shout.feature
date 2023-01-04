@@ -33,6 +33,7 @@ Feature: Shout
       When Sean shouts
       Then Lucy should hear Sean's message
 
+    @focus @smoke
     Scenario: Listener is out of range
       Given the range is 100
       And people are located as the following

@@ -1,0 +1,5 @@
+# language: en-lol
+
+OH HAI: HEAR SHOOUT
+#  MISHUN: MESAGE IZ 2 LONG
+#    I CAN HAZ A KAT CALD SHOUTR
